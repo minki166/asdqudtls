@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>멋진 클릭커 게임</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        #clickButton {
+            width: 150px;
+            height: 150px;
+            background-color: #ff4444;
+            color: white;
+            font-size: 24px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        #clickButton:hover {
+            transform: scale(1.1);
+        }
+        #upgradeButton {
+            width: 200px;
+            height: 50px;
+            background-color: #44ff44;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        #upgradeButton:hover {
+            transform: scale(1.05);
+        }
+        #score {
+            font-size: 36px;
+            margin: 20px 0;
+            color: #333;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+            color: #555;
+        }
+    </style>
+    <script>
+        let score = 0;
+        let clickValue = 1;
+        let upgradeCost = 50; // 초기 업그레이드 비용
+        let upgradeLevel = 0; // 업그레이드 횟수 추적
+
+        // 점수 증가 함수
+        function increaseScore() {
+            score += clickValue;
+            document.getElementById('score').innerText = '점수: ' + score;
+        }
+
+        // 업그레이드 함수
+        function upgradeScore() {
+            if (score >= upgradeCost) {
+                score -= upgradeCost;
+                clickValue *= 2;
+                upgradeLevel += 1;
+                upgradeCost = 50 * Math.pow(2, upgradeLevel); // 비용 2배씩 증가
+                document.getElementById('score').innerText = '점수: ' + score;
+                document.getElementById('upgradeButton').innerText = '클릭당 ' + clickValue + '점 (비용: ' + upgradeCost + '점)';
+            } else {
+                alert(upgradeCost + '점 이상이 필요합니다!');
+            }
+        }
+
+        // DOM 로드 후 이벤트 리스너 추가
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('clickButton').addEventListener('click', increaseScore);
+            document.getElementById('upgradeButton').addEventListener('click', upgradeScore);
+        });
+    </script>
+</head>
+<body>
+    <h1>멋진 클릭커 게임!</h1>
+    <p>버튼을 클릭해서 점수를 쌓아보세요!</p>
+    <div id="score">점수: 0</div>
+    <button id="clickButton">클릭!</button>
+    <button id="upgradeButton">클릭당 1점 (비용: 50점)</button>
+</body>
+</html>
