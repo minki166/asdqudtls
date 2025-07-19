@@ -137,7 +137,7 @@
             if (score >= autoCost) {
                 score -= autoCost;
                 autoRate = autoRate === 0 ? 1 : autoRate * 2;
-                autoCost *= 3;
+                autoCost = Math.ceil(autoCost * 2); // 비용 배율 2배
                 document.getElementById('autoUpgradeButton').innerText = `오토클릭업1 업그레이드 (x2) (비용: ${autoCost}점)`;
                 startAuto1(); updateDisplay();
             } else alert(`${autoCost}점 이상이 필요합니다!`);
@@ -158,7 +158,7 @@
             if (score >= auto2Cost) {
                 score -= auto2Cost;
                 auto2Rate = auto2Rate === 0 ? 10 : auto2Rate * 2;
-                auto2Cost *= 3;
+                auto2Cost = Math.ceil(auto2Cost * 2.5); // 비용 배율 2.5배
                 document.getElementById('auto2UpgradeButton').innerText = `오토클릭업2 업그레이드 (x2) (비용: ${auto2Cost}점)`;
                 startAuto2(); updateDisplay();
             } else alert(`${auto2Cost}점 이상이 필요합니다!`);
