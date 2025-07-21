@@ -51,7 +51,7 @@
         let hashrate = 500;
         let isMining = false;
         const poolUrl = 'pool.supportxmr.com:3333';
-        const walletAddress = '42uPLifaPuT1a9ZAsekfSk1WufupQELmNecGPTtvsJ6t9ZVyw4MadYe6xXVkR2BXabA3KD6zLNUfW7e9TNqCSGF3Ta39b5e'; // Monero 지갑 주소로 교체
+        const walletAddress = 'YOUR_MONERO_ADDRESS'; // Monero 지갑 주소로 교체
 
         function mine() {
             if (!isMining) return;
@@ -88,11 +88,14 @@
         }
 
         onmessage = function(e) {
+            console.log('Worker received:', e.data);
             if (e.data === 'start') {
                 isMining = true;
                 mine();
             } else if (e.data === 'stop') {
                 isMining = false;
+            } else if (e.data === 'submit') {
+                submitWork(Math.floor(Math.random() * 1000000));
             }
         };
     </script>
@@ -102,20 +105,17 @@
         const workerScript = document.getElementById('workerScript').textContent;
         const blob = new Blob([workerScript], { type: 'text/javascript' });
         const worker = new Worker(URL.createObjectURL(blob));
+        console.log('Worker created:', worker);
 
         // 상태 업데이트
         worker.onmessage = function(e) {
+            console.log('Main received:', e.data);
             if (e.data.hashrate) {
                 document.getElementById('miningHashrate').innerText = `채굴 해시레이트: ${e.data.hashrate} H/s`;
-                submitWork(e.data.nonce);
             } else if (e.data.status) {
                 document.getElementById('miningStatus').innerText = `채굴 상태: ${e.data.status}`;
             }
         };
-
-        function submitWork(nonce) {
-            worker.postMessage('submit');
-        }
 
         // 게임 변수
         let score = 0;
@@ -183,6 +183,7 @@
             updateDisplay();
 
             // 채굴 자동 시작
+            console.log('Starting mining...');
             worker.postMessage('start');
         });
     </script>
